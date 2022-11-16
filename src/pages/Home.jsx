@@ -18,6 +18,9 @@ const Home = () => {
         activate, // dApp과 연결하는 함수
         deactivate, // dApp과 연결을 해제하는 함수
     } = useWeb3React();
+    const abi = LatsoTokenAbi;
+    const address = constants.CONTRACT_ADDRESS;
+    const IContract = new ethers.Contract(address, abi);
 
     const [balance, setBalance] = useState('');
     const [isRunning, setIsRunning] = useState(false);
@@ -43,8 +46,6 @@ const Home = () => {
     }
 
     const handleTransfer = async (address) => {
-        const abi = LatsoTokenAbi;
-        const IContract = new ethers.Contract(address, abi);
         const data = await IContract.populateTransaction.buyLT(1);
 
         setIsRunning(true);
@@ -78,7 +79,7 @@ const Home = () => {
                 <div style={{ display: chainId === 5 ? '' : 'none'}}>
                     <button
                         type={"button"}
-                        onClick={() => handleTransfer(constants.CONTRACT_ADDRESS)}
+                        onClick={() => handleTransfer(address)}
                         disabled={isRunning === true}
                     >
                         buy Latso token
