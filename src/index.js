@@ -6,7 +6,9 @@ import reportWebVitals from './reportWebVitals';
 import { Web3Provider } from "@ethersproject/providers";
 import { Web3ReactProvider } from "@web3-react/core";
 
-const getLibrary = (provider: any) => new Web3Provider(provider);
+const getLibrary = (provider: any) => {
+    return new Web3Provider(provider);
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
