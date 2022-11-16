@@ -9,17 +9,24 @@ import LatsoTokenAbi from "../contracts/LatsoTokenAbi";
 
 const Home = () => {
     const {
-        connector, // dApp에 연결된 wallet의 connector ex. metamask-injectedConnector
+        // connector, dApp에 연결된 wallet의 connector ex. metamask-injectedConnector
         library, // web3provier가 제공하는 라이브러리
         chainId, // dApp에 연결된 account의 chainId
         account, // dApp에 연결된 account의 address
         active, // dApp과의 연결 여부
-        error,
+        // error,
         activate, // dApp과 연결하는 함수
         deactivate, // dApp과 연결을 해제하는 함수
     } = useWeb3React();
+
     const [balance, setBalance] = useState('');
     const [isRunning, setIsRunning] = useState(false);
+
+    useEffect(() => {
+        library?.getBalance(account).then(r => {
+            setBalance(r / 1e18);
+        })
+    });
 
     const handleConnect = () => {
         if (active && account) {
@@ -35,16 +42,10 @@ const Home = () => {
         }
     }
 
-    useEffect(() => {
-        library?.getBalance(account).then(r => {
-            setBalance(r/1e18);
-        })
-    });
-
     const handleTransfer = async (address) => {
         const abi = LatsoTokenAbi;
         const IContract = new ethers.Contract(address, abi);
-        const data = await IContract.populateTransaction.buyLT(3);
+        const data = await IContract.populateTransaction.buyLT(1);
 
         setIsRunning(true);
         const signer = library.getSigner();
@@ -74,7 +75,7 @@ const Home = () => {
                     <p>Balance: {balance}</p>
                 </div>
 
-                <div style={{ display: chainId == 5 ? '' : 'none'}}>
+                <div style={{ display: chainId === 5 ? '' : 'none'}}>
                     <button
                         type={"button"}
                         onClick={() => handleTransfer(constants.CONTRACT_ADDRESS)}
